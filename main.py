@@ -1,10 +1,9 @@
 from packets_interceptor import PacketsInterceptor
-from example_packets_consumer import ExamplePacketsConsumer
+from packets_consumer import PacketsConsumer
 
 if __name__ == '__main__':
-    consumer = ExamplePacketsConsumer()
+    consumer = PacketsConsumer()
     interceptor = PacketsInterceptor()
 
     interceptor.add_consumer(consumer)
-
     interceptor.start_intercepting()
