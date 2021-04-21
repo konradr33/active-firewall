@@ -7,4 +7,7 @@ class ExamplePacketsConsumer(PacketsConsumer):
         print('ExamplePacketsConsumer.consume_packets', packets)
 
     def consume_packet(self, packet):
-        print('ExamplePacketsConsumer.consume_packet from',packet.ip.src,", to:", packet.ip.dst)
+        try:
+            print('ExamplePacketsConsumer.consume_packet from', packet.ip.src, ", to:", packet.ip.dst)
+        except AttributeError:
+            pass
