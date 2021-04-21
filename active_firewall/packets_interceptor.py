@@ -10,14 +10,18 @@ class PacketsInterceptor:
         print('add_consumer')
         self.consumers.append(consumer)
 
-    def start_intercepting(self, interface):
+    def start_intercepting(self, interface, only_incoming_traffic=False, host_ip=None):
         print('start_intercepting')
         if self.isIntercepting:
             return
 
         self.isIntercepting = True
+        bpf_filter = 'ip'
 
-        capture = pyshark.LiveCapture(interface=interface)
+        if only_incoming_traffic and host_ip is not None:
+            bpf_filter += f' dst host {host_ip}'
+
+        capture = pyshark.LiveCapture(interface=interface, bpf_filter=bpf_filter)
 
         for packet in capture.sniff_continuously():
             for consumer in self.consumers:
