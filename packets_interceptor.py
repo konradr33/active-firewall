@@ -1,11 +1,11 @@
 import pyshark
+from config import Config
 
 
 class PacketsInterceptor:
     def __init__(self):
         self.consumers = []
         self.isIntercepting = False
-        self.counter = 0
 
     def add_consumer(self, consumer):
         print('add_consumer')
@@ -18,10 +18,9 @@ class PacketsInterceptor:
 
         self.isIntercepting = True
 
-        capture = pyshark.LiveCapture(interface='wlp8s0')
+        capture = pyshark.LiveCapture(interface=Config.get_config('ListeningInterface'))
 
         for packet in capture.sniff_continuously():
-            self.counter += 1
-            print('packet', self.counter)
+            print('packet')
             for consumer in self.consumers:
                 consumer.consume_packet(packet)
