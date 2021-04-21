@@ -1,18 +1,20 @@
 from packets_consumer import PacketsConsumer
 import time
+from config import Config
 
 class PacketsConsumerDOS(PacketsConsumer):
 
-    def __init__(self):
+    def __init__(self, pps):
         self.start=time.time()
         self.packetCnt = {} 
+        self.allowedPacketsPerSecond = int(Config.get_config('AllowedPacketsPerSecond'))
 
     def _reset(self):        
         self.start=time.time()
         self.packetCnt = {} 
 
     def _findAlerts(self):               
-        for ip in {k:v for k,v in self.packetCnt.items() if v>100}:    	    
+        for ip in {k:v for k,v in self.packetCnt.items() if v>self.allowedPacketsPerSecond}:    	    
     	    print("Alert: "+ip+" "+str(self.packetCnt[ip]))  
 
     def consume_packets(self, packets):
