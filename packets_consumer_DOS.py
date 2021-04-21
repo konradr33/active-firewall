@@ -7,13 +7,11 @@ class PacketsConsumerDOS(PacketsConsumer):
         self.start=time.time()
         self.packetCnt = {} 
 
-    def _reset(self):
-        #print(self.packetCnt)
+    def _reset(self):        
         self.start=time.time()
         self.packetCnt = {} 
 
-    def _findAlerts(self):
-        #print("Looking for alerts")        
+    def _findAlerts(self):               
         for ip in {k:v for k,v in self.packetCnt.items() if v>100}:    	    
     	    print("Alert: "+ip+" "+str(self.packetCnt[ip]))  
 
@@ -25,5 +23,5 @@ class PacketsConsumerDOS(PacketsConsumer):
             if (packet.ip.src in self.packetCnt): self.packetCnt[packet.ip.src] +=1
             else: self.packetCnt[packet.ip.src] = 1
         if(time.time()-self.start >= 1):
-            self._findAlerts
+            self._findAlerts()
             self._reset()
