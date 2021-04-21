@@ -7,8 +7,11 @@
   sudo apt install tshark
   sudo chmod +x /usr/bin/dumpcap
   ```
-* pyshark `sudo pip install pyshark`
+* Other Python packages:
+  * pyshark 
+  
+`pip install -r requirements.txt`
 
 # Run application
 
-`sudo python3 main.py`
+`python3 main.py`
