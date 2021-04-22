@@ -8,10 +8,10 @@
   sudo chmod +x /usr/bin/dumpcap
   ```
 * Other Python packages:
-  * pyshark 
-  
+    * pyshark
+
 `pip install -r requirements.txt`
 
 # Run application
 
-`python3 main.py`
+`sudo python3 main.py`
