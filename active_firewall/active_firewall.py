@@ -9,7 +9,7 @@ def activate_firewall():
     listening_interface = Config.get_config('ListeningInterface')
     host_ip = get_ip(listening_interface)
 
-    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'))
+    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'), int(Config.get_config('DosRuleTimeout')))
 
     consumer = DosDetector(int(Config.get_config('AllowedPacketsPerSecond')), iptables_adapter)
     interceptor = PacketsInterceptor()
