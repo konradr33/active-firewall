@@ -1,12 +1,12 @@
 import time
 
-from active_firewall.iptables_adapter import IptablesAdapter
 from active_firewall.packets_consumers.packets_consumer import PacketsConsumer
 
 
 class DosDetector(PacketsConsumer):
 
-    def __init__(self, allowed_packets_per_second):
+    def __init__(self, allowed_packets_per_second, iptables_adapter):
+        self.iptables_adapter = iptables_adapter
         self.start = time.time()
         self.packet_cnt = {}
         self.allowed_packets_per_second = allowed_packets_per_second
@@ -18,10 +18,7 @@ class DosDetector(PacketsConsumer):
     def __find_alerts(self):
         for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_second}:
             print("Alert: " + ip + " " + str(self.packet_cnt[ip]))
-            IptablesAdapter.add_rule(["INPUT", "-s", ip, "-j", "DROP"])
-
-    def consume_packets(self, packets):
-        pass
+            self.iptables_adapter.add_rule(["-s", ip])
 
     def consume_packet(self, packet):
         if hasattr(packet, 'ip'):

@@ -2,14 +2,16 @@ import subprocess
 
 
 class IptablesAdapter:
-    @staticmethod
-    def add_rule(rule):
-        add = ["sudo", "iptables", "-A"]
+
+    def __init__(self, chain):
+        self.chain = chain
+
+    def add_rule(self, rule):
+        add = ["sudo", "iptables", "-A", self.chain, "-j", "DROP"]
         new_rules = add + rule
         subprocess.call(new_rules)
 
-    @staticmethod
-    def delete_rule(rule):
-        delete = ["sudo", "iptables", "-D"]
+    def delete_rule(self, rule):
+        delete = ["sudo", "iptables", self.chain, "-j", "DROP"]
         new_rules = delete + rule
         subprocess.call(new_rules)
