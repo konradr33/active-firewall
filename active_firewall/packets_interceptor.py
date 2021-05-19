@@ -7,7 +7,6 @@ class PacketsInterceptor:
         self.isIntercepting = False
 
     def add_consumer(self, consumer):
-        print('add_consumer')
         self.consumers.append(consumer)
 
     def start_intercepting(self, interface, only_incoming_traffic=False, host_ip=None):

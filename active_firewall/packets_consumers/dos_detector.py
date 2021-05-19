@@ -17,7 +17,7 @@ class DosDetector(PacketsConsumer):
 
     def __find_alerts(self):
         for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_second}:
-            print("Alert: " + ip + " " + str(self.packet_cnt[ip]))
+            print("Alert DoS: " + ip + " " + str(self.packet_cnt[ip]))
             self.iptables_adapter.add_rule_with_timeout(["-s", ip])
 
     def consume_packet(self, packet):
