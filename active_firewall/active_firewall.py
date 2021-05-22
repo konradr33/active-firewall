@@ -13,7 +13,7 @@ def activate_firewall():
     iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'), int(Config.get_config('DosRuleTimeout')))
 
     consumers = []
-    consumers.append(DosDetector(int(Config.get_config('AllowedPacketsPerSecond')), iptables_adapter))
+    consumers.append(DosDetector(int(Config.get_config('AllowedPacketsPerSecond')), int(Config.get_config('LargePacketSize')), int(Config.get_config('AllowedLargePacketsPerSecond')), iptables_adapter))
     consumers.append(PortScanDetector(int(Config.get_config('AllowedPortsPerSecond')), iptables_adapter))
 
     interceptor = PacketsInterceptor()
