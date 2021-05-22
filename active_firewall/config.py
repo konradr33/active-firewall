@@ -21,4 +21,4 @@ class Config:
         if Config.__config is None:
             Config.__init_config()
 
-        return Config.__config['DEFAULT'][name]
+        return dict(Config.__config)['DEFAULT'][name]
