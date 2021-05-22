@@ -5,14 +5,13 @@ from threading import Timer
 
 class IptablesAdapter:
 
-    def __init__(self, chain, timeout):
+    def __init__(self, chain):
         self.chain = chain
-        self.timeout = timeout
         atexit.register(self.__flush_chain, self.chain)
 
-    def add_rule_with_timeout(self, rule):
+    def add_rule_with_timeout(self, rule, timeout):
         if self.add_rule(rule):
-            t = Timer(self.timeout, self.delete_rule, [rule])
+            t = Timer(timeout, self.delete_rule, [rule])
             t.start()
 
     def add_rule(self, rule):
@@ -37,6 +36,6 @@ class IptablesAdapter:
     @staticmethod
     def __flush_chain(chain):
         # Uncomment if you want clear whole iptables chain on app exit
-        print(f'Flushing {chain} rules')
-        subprocess.call(["sudo", "iptables", "-F", chain])
+        # print(f'Flushing {chain} rules')
+        # subprocess.call(["sudo", "iptables", "-F", chain])
         pass

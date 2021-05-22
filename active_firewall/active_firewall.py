@@ -10,11 +10,23 @@ def activate_firewall():
     listening_interface = Config.get_config('ListeningInterface')
     host_ip = get_ip(listening_interface)
 
-    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'), int(Config.get_config('DosRuleTimeout')))
+    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'))
 
     consumers = []
-    consumers.append(DosDetector(int(Config.get_config('AllowedPacketsPerSecond')), int(Config.get_config('LargePacketSize')), int(Config.get_config('AllowedLargePacketsPerSecond')), iptables_adapter))
-    consumers.append(PortScanDetector(int(Config.get_config('AllowedPortsPerSecond')), iptables_adapter))
+    consumers.append(
+        DosDetector(iptables_adapter,
+                    int(Config.get_config('DosAllowedPacketsPerInterval')),
+                    int(Config.get_config('DosLargePacketSize')),
+                    int(Config.get_config('DosAllowedLargePacketsPerInterval')),
+                    int(Config.get_config('DosRuleTimeoutSeconds')),
+                    float(Config.get_config('DosScanningInterval')),
+                    ))
+
+    consumers.append(PortScanDetector(iptables_adapter,
+                                      int(Config.get_config('PsAllowedPortsPerInterval')),
+                                      int(Config.get_config('PsRuleTimeoutSeconds')),
+                                      float(Config.get_config('PsScanningInterval')),
+                                      ))
 
     interceptor = PacketsInterceptor()
 

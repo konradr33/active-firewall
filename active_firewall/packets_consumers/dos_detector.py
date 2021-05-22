@@ -5,15 +5,18 @@ from active_firewall.packets_consumers.packets_consumer import PacketsConsumer
 
 class DosDetector(PacketsConsumer):
 
-    def __init__(self, allowed_packets_per_second, large_packet_size, allowed_large_packets_per_second,
-                 iptables_adapter):
+    def __init__(self, iptables_adapter, allowed_packets_per_interval, large_packet_size,
+                 allowed_large_packets_per_interval,
+                 rule_timeout, scanning_interval):
         self.iptables_adapter = iptables_adapter
         self.start = time.time()
         self.packet_cnt = {}
-        self.allowed_packets_per_second = allowed_packets_per_second
+        self.allowed_packets_per_interval = allowed_packets_per_interval
         self.large_packet_cnt = {}
         self.large_packet_size = large_packet_size
-        self.allowed_large_packets_per_second = allowed_large_packets_per_second
+        self.allowed_large_packets_per_interval = allowed_large_packets_per_interval
+        self.scanning_interval = scanning_interval
+        self.rule_timeout = rule_timeout
 
     def __reset(self):
         self.start = time.time()
@@ -21,12 +24,12 @@ class DosDetector(PacketsConsumer):
         self.large_packet_cnt = {}
 
     def __find_alerts(self):
-        for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_second}:
+        for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_interval}:
             print("Alert DoS: " + ip + " " + str(self.packet_cnt[ip]))
-            self.iptables_adapter.add_rule_with_timeout(["-s", ip])
-        for ip in {k: v for k, v in self.large_packet_cnt.items() if v > self.allowed_large_packets_per_second}:
+            self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
+        for ip in {k: v for k, v in self.large_packet_cnt.items() if v > self.allowed_large_packets_per_interval}:
             print("Alert DoS: " + ip + " " + str(self.packet_cnt[ip]))
-            self.iptables_adapter.add_rule_with_timeout(["-s", ip])
+            self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
 
     def consume_packet(self, packet):
         if hasattr(packet, 'ip'):
@@ -40,6 +43,8 @@ class DosDetector(PacketsConsumer):
                     self.packet_cnt[packet.ip.src] += 1
                 else:
                     self.packet_cnt[packet.ip.src] = 1
-        if time.time() - self.start >= 1:
+
+        if time.time() - self.start >= self.scanning_interval:
+            print('scan')
             self.__find_alerts()
             self.__reset()
