@@ -26,14 +26,14 @@ class TestDosDetectorMethods(unittest.TestCase):
 
     def test_add_rule_with_timeout_large_packets(self):
         self.iptables_adapter.add_rule_with_timeout = MagicMock()
-        self.dos_detector.large_packet_cnt={self.ip[0]:self.allowed_large_packets_per_interval}
+        self.dos_detector.large_packet_cnt={self.ip[0]:self.allowed_large_packets_per_interval+1}
         self.dos_detector.start = self.dos_detector.start - self.scanning_interval
         self.dos_detector.consume_packet(self.large_packet)       
         self.iptables_adapter.add_rule_with_timeout.assert_called_with(["-s", self.ip[0]], self.rule_timeout)
     
     def test_add_rule_with_timeout_normall_packets(self):
         self.iptables_adapter.add_rule_with_timeout = MagicMock()
-        self.dos_detector.packet_cnt={self.ip[0]:self.allowed_packets_per_interval}
+        self.dos_detector.packet_cnt={self.ip[0]:self.allowed_packets_per_interval+1}
         self.dos_detector.start = self.dos_detector.start - self.scanning_interval
         self.dos_detector.consume_packet(self.large_packet)       
         self.iptables_adapter.add_rule_with_timeout.assert_called_with(["-s", self.ip[0]], self.rule_timeout)    
