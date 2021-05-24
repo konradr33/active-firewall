@@ -2,7 +2,6 @@ import time
 
 from active_firewall.packets_consumers.packets_consumer import PacketsConsumer
 
-
 class DosDetector(PacketsConsumer):
 
     def __init__(self, iptables_adapter, allowed_packets_per_interval, large_packet_size,
@@ -25,10 +24,8 @@ class DosDetector(PacketsConsumer):
 
     def __find_alerts(self):
         for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_interval}:
-            print("Alert DoS: " + ip + " " + str(self.packet_cnt[ip]))
             self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
         for ip in {k: v for k, v in self.large_packet_cnt.items() if v > self.allowed_large_packets_per_interval}:
-            print("Alert DoS: " + ip + " " + str(self.packet_cnt[ip]))
             self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
 
     def consume_packet(self, packet):

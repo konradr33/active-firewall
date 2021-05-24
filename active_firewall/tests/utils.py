@@ -1,8 +1,8 @@
 class Packet:
-    def __init__(self, ip=None, tcp=None):
+    def __init__(self, ip=None, tcp=None, length=100):
         self.ip = ip
         self.tcp = tcp
-
+        self.length = length
 
 class Tcp:
     def __init__(self, dstport):
