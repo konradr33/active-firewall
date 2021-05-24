@@ -43,6 +43,6 @@ class IptablesAdapter:
     @staticmethod
     def __flush_chain(chain):
         # Uncomment if you want clear whole iptables chain on app exit
-        print(f'Flushing {chain} rules')
-        subprocess.call(["sudo", "iptables", "-F", chain])
+        # print(f'Flushing {chain} rules')
+        # subprocess.call(["sudo", "iptables", "-F", chain])
         pass
