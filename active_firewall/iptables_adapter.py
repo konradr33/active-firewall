@@ -36,8 +36,6 @@ class IptablesAdapter:
     def __check_if_rule_exists(rule):
         exist_response = subprocess.call(["sudo", "iptables", "-C"] + rule, stdout=subprocess.DEVNULL,
                                          stderr=subprocess.DEVNULL)
-        if exist_response == 0:
-            print('rule exists')
         return exist_response == 0
 
     @staticmethod
