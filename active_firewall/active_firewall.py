@@ -5,13 +5,15 @@ from active_firewall.packets_consumers.port_scan_detector import PortScanDetecto
 from active_firewall.bruceforce_protector import BruteForceProtector
 from active_firewall.packets_interceptor import PacketsInterceptor
 from active_firewall.utils.get_ip import get_ip
+from active_firewall.utils.str_to_bool import str_to_bool
 
 
 def activate_firewall():
     listening_interface = Config.get_config('ListeningInterface')
     host_ip = get_ip(listening_interface)
 
-    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'))
+    iptables_adapter = IptablesAdapter(Config.get_config('IptablesChain'),
+                                       str_to_bool(Config.get_config('ClearChainOnExit')))
 
     consumers = []
     consumers.append(
