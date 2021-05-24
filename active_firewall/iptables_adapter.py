@@ -21,6 +21,13 @@ class IptablesAdapter:
             return True
         return False
 
+    def add_custom_rule(self, rule):
+        add_rule = [self.chain] + rule
+        if not IptablesAdapter.__check_if_rule_exists(add_rule):
+            subprocess.call(["sudo", "iptables", "-A"] + add_rule)
+            return True
+        return False
+
     def delete_rule(self, rule):
         delete_rule = [self.chain, "-j", "DROP"] + rule
         subprocess.call(["sudo", "iptables", "-D"] + delete_rule)
@@ -36,6 +43,6 @@ class IptablesAdapter:
     @staticmethod
     def __flush_chain(chain):
         # Uncomment if you want clear whole iptables chain on app exit
-        # print(f'Flushing {chain} rules')
-        # subprocess.call(["sudo", "iptables", "-F", chain])
+        print(f'Flushing {chain} rules')
+        subprocess.call(["sudo", "iptables", "-F", chain])
         pass

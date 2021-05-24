@@ -1,14 +1,32 @@
 class BruteForceProtector:
 
-    def __init__(self, iptables_adapter):
+    def __init__(self, iptables_adapter, num_of_auth_tries, timeout, auth_port):
         self.iptables_adapter = iptables_adapter
+        self.num_of_auth_tries = num_of_auth_tries
+        self.timeout = timeout
+        self.auth_port = auth_port
 
-    numOfAuthTries = 5
-    time = 100 
-
-    def __set_BruteForce_rules():
-        self.iptables_adapter.add_rule(["INPUT", "-p", "tcp", "-m", "tcp", "--dport", "22", "-m", "state", "--state", "NEW", "-m", "recent", "--set", "--name", "SSH", "--rsource"])
-        self.iptables_adapter.add_rule(["INPUT", "-p", "tcp", "-m", "tcp", "--dport", "22", "-m", "recent", "--rcheck", "--seconds", str(time), "--hitcount", str(numOfAuthTries), "--rttl", "--name", "SSH", "--rsource", "-j", "REJECT", "--reject-with", "tcp-reset"])
-        self.iptables_adapter.add_rule(["INPUT", "-p", "tcp", "-m", "tcp", "--dport", "22", "-m", "recent", "--rcheck", "--seconds", str(time), "--hitcount", str(numOfAuthTries), "--rttl", "--name", "SSH", "--rsource", "-j", "LOG", "--log-prefix", "SSHBruteForce"])
-        self.iptables_adapter.add_rule(["INPUT", "-p", "tcp", "-m", "tcp", "--dport", "22", "-m", "recent", "--update", "--seconds", str(time), "--hitcount", str(numOfAuthTries), "--rttl", "--name", "SSH", "--rsource", "-j", "REJECT", "--reject-with", "tcp-reset"])
-        self.iptables_adapter.add_rule(["INPUT", "-p", "tcp", "-m", "tcp", "--dport", "22", "-j", "ACCEPT"])
+    def apply_rules(self):
+        self.iptables_adapter.add_custom_rule(
+            ["-p", "tcp", "-m", "tcp", "--dport", str(self.auth_port), "-m", "state", "--state", "NEW", "-m", "recent",
+             "--set", "--name", "SSH", "--rsource"])
+        self.iptables_adapter.add_custom_rule(
+            ["-p", "tcp", "-m", "tcp", "--dport", str(self.auth_port), "-m", "recent", "--rcheck", "--seconds",
+             str(self.timeout),
+             "--hitcount", str(self.num_of_auth_tries), "--rttl", "--name", "SSH", "--rsource", "-j", "REJECT",
+             "--reject-with",
+             "tcp-reset"])
+        self.iptables_adapter.add_custom_rule(
+            ["-p", "tcp", "-m", "tcp", "--dport", str(self.auth_port), "-m", "recent", "--rcheck", "--seconds",
+             str(self.timeout),
+             "--hitcount", str(self.num_of_auth_tries), "--rttl", "--name", "SSH", "--rsource", "-j", "LOG",
+             "--log-prefix",
+             "SSHBruteForce"])
+        self.iptables_adapter.add_custom_rule(
+            ["-p", "tcp", "-m", "tcp", "--dport", str(self.auth_port), "-m", "recent", "--update", "--seconds",
+             str(self.timeout),
+             "--hitcount", str(self.num_of_auth_tries), "--rttl", "--name", "SSH", "--rsource", "-j", "REJECT",
+             "--reject-with",
+             "tcp-reset"])
+        self.iptables_adapter.add_custom_rule(
+            ["-p", "tcp", "-m", "tcp", "--dport", str(self.auth_port), "-j", "ACCEPT"])

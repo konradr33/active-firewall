@@ -45,6 +45,5 @@ class DosDetector(PacketsConsumer):
                     self.packet_cnt[packet.ip.src] = 1
 
         if time.time() - self.start >= self.scanning_interval:
-            print('scan')
             self.__find_alerts()
             self.__reset()
