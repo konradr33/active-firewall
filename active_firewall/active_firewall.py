@@ -9,6 +9,7 @@ from active_firewall.utils.str_to_bool import str_to_bool
 
 
 def activate_firewall():
+    """Starts an active firewall"""
     listening_interface = Config.get_config('ListeningInterface')
     host_ip = get_ip(listening_interface)
 
