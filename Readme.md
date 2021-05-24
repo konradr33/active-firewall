@@ -1,5 +1,5 @@
 # Active Firewall
-
+[![python-app Actions Status](https://github.com/konradr33/active-firewall/actions/workflows/python-app.yml/badge.svg)](https://github.com/konradr33/active-firewall/actions)
 ## Requirements
 
 * Tshark
