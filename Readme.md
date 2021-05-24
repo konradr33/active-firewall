@@ -15,3 +15,12 @@
 # Run application
 
 `sudo python3 main.py`
+
+# Run tests
+
+* Install pytest
+  
+  `pip install pytest`
+* run tests
+  
+  `pytest`
