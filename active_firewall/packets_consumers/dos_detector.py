@@ -1,4 +1,5 @@
 import time
+import datetime
 
 from active_firewall.packets_consumers.packets_consumer import PacketsConsumer
 
@@ -51,8 +52,10 @@ class DosDetector(PacketsConsumer):
         Performs an packet analysis, looking for DoS attacks
         """
         for ip in {k: v for k, v in self.packet_cnt.items() if v > self.allowed_packets_per_interval}:
+            print(str(datetime.datetime.now()) + "\tAlert DoS: " + ip + " send " + str(self.packet_cnt[ip]))
             self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
         for ip in {k: v for k, v in self.large_packet_cnt.items() if v > self.allowed_large_packets_per_interval}:
+            print(str(datetime.datetime.now()) + "\tAlert DoS (Big packet): " + ip)
             self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
 
     def consume_packet(self, packet):

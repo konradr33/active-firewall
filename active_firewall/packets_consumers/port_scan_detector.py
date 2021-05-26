@@ -1,4 +1,5 @@
 import time
+import datetime
 
 from active_firewall.packets_consumers.packets_consumer import PacketsConsumer
 
@@ -42,7 +43,8 @@ class PortScanDetector(PacketsConsumer):
         """
         for ip in self.ip_set:
             if len(self.ip_set[ip]) > self.allowed_ports_per_interval:
-                print("Alert PortScanning: " + ip + " scanner " + str(len(self.ip_set[ip])) + " ports")
+                print(str(datetime.datetime.now()) + "\tAlert PortScanning: " + ip + " scanner " + str(
+                    len(self.ip_set[ip])) + " ports")
                 self.iptables_adapter.add_rule_with_timeout(["-s", ip], self.rule_timeout)
 
     def consume_packet(self, packet):
